@@ -1,10 +1,13 @@
 import React from 'react'
 
+const SECURITY_CODE = 'confirm'
+
 class ClassState extends React.Component {
     constructor() {
         super()
 
         this.state = {
+            value: '',
             error: false,
             loading: false,
         }
@@ -17,21 +20,31 @@ class ClassState extends React.Component {
         loading &&
             setTimeout(() => {
                 this.setState({ loading: false })
+                this.state.value !== SECURITY_CODE
+                    ? this.setState({ error: true })
+                    : this.setState({ error: false })
             }, 1000)
     }
 
     render() {
-        const { error, loading } = this.state
+        const { value, error, loading } = this.state
         return (
             <div>
                 <h2>Delete {this.props.name}</h2>
-                {!error ? (
+                {!!loading ? (
+                    <p>Loading...</p>
+                ) : !error ? (
                     <p>Please, insert your security code</p>
                 ) : (
                     <p>Error: incorrect code</p>
                 )}
-                {!!loading && <p>Loading...</p>}
-                <input placeholder="security code" />
+                <input
+                    placeholder="security code"
+                    value={value}
+                    onChange={({ target }) =>
+                        this.setState({ value: target.value })
+                    }
+                />
                 <button onClick={() => this.setState({ loading: !loading })}>
                     Check it
                 </button>
