@@ -10,7 +10,7 @@ class ClassState extends React.Component {
         }
     }
 
-    // This life cycle method is only called later updating the component.
+    // This lifecycle method is only called later updating the component.
     componentDidUpdate() {
         const { loading } = this.state
         //validation to avoid execution on page loading
