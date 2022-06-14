@@ -12,8 +12,10 @@ function UseState({ name }) {
         value: '',
         error: false,
         loading: false,
+        confirmed: false,
+        deleted: false,
     })
-    const { value, error, loading } = state
+    const { value, error, loading, confirmed, deleted } = state
 
     //executes the code when it fulfills the conditions given in the second argument
     useEffect(() => {
@@ -25,34 +27,85 @@ function UseState({ name }) {
                 // setState({ ...state, loading: false })
                 value !== SECURITY_CODE
                     ? setState({ ...state, error: true, loading: false })
-                    : setState({ ...state, error: false, loading: false })
+                    : setState({
+                          ...state,
+                          error: false,
+                          loading: false,
+                          confirmed: true,
+                      })
             }, 1000)
         console.log(state)
     }, [loading])
 
-    return (
-        <div>
-            <h2>Delete {name}</h2>
-            {!!loading ? (
-                <p>Loading...</p>
-            ) : !error ? (
-                <p>Please, insert your security code</p>
-            ) : (
-                <p>Error: incorrect code</p>
-            )}
+    if (!confirmed && !deleted) {
+        return (
+            <div>
+                <h2>Delete {name}</h2>
+                {!!loading ? (
+                    <p>Loading...</p>
+                ) : !error ? (
+                    <p>Please, insert your security code</p>
+                ) : (
+                    <p>Error: incorrect code</p>
+                )}
 
-            <input
-                placeholder="security code"
-                value={value}
-                onChange={({ target }) =>
-                    setState({ ...state, value: target.value })
-                }
-            />
-            <button onClick={() => setState({ ...state, loading: !loading })}>
-                Check it
-            </button>
-        </div>
-    )
+                <input
+                    placeholder="security code"
+                    value={value}
+                    onChange={({ target }) =>
+                        setState({ ...state, value: target.value })
+                    }
+                />
+                <button
+                    onClick={() => setState({ ...state, loading: !loading })}
+                >
+                    Check it
+                </button>
+            </div>
+        )
+    } else if (confirmed) {
+        return (
+            <div>
+                <h2>Delete {name}</h2>
+                <p>Are you sure you want to delete UseState?</p>
+
+                <button
+                    onClick={() =>
+                        setState({ ...state, confirmed: false, deleted: true })
+                    }
+                >
+                    Yes, delete.
+                </button>
+                <button
+                    onClick={() =>
+                        setState({ ...state, value: '', confirmed: false })
+                    }
+                >
+                    No, go back.
+                </button>
+            </div>
+        )
+    } else if (deleted) {
+        return (
+            <div>
+                <h2>{name} was deleted</h2>
+                <p>Do you want to recover UseState?</p>
+
+                <button
+                    onClick={() =>
+                        setState({
+                            ...state,
+                            value: '',
+                            confirmed: false,
+                            deleted: false,
+                        })
+                    }
+                >
+                    Yes, recover.
+                </button>
+            </div>
+        )
+    }
 }
 
 export { UseState }
