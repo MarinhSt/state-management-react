@@ -3,18 +3,32 @@ import React, { useState, useEffect } from 'react'
 const SECURITY_CODE = 'confirm'
 
 function UseState({ name }) {
-    const [value, setValue] = useState('')
-    const [error, setError] = useState(false)
-    const [loading, setLoading] = useState(false)
+    // const [value, setValue] = useState('')
+    // const [error, setError] = useState(false)
+    // const [loading, setLoading] = useState(false)
+
+    //composite state
+    const [state, setState] = useState({
+        value: '',
+        error: false,
+        loading: false,
+    })
+    const { value, error, loading } = state
+
     //executes the code when it fulfills the conditions given in the second argument
     useEffect(() => {
         //validation to avoid execution on page loading
         loading &&
             setTimeout(() => {
-                setLoading(false)
-                value !== SECURITY_CODE ? setError(true) : setError(false)
+                //it is necessary to specify that the rest of the properties must also be saved when any of them is changed,
+                //to make sure not to overwrite only this change losing the rest of the states
+                // setState({ ...state, loading: false })
+                value !== SECURITY_CODE
+                    ? setState({ ...state, error: true, loading: false })
+                    : setState({ ...state, error: false, loading: false })
             }, 1000)
-    }, [loading, value])
+        console.log(state)
+    }, [loading])
 
     return (
         <div>
@@ -30,9 +44,13 @@ function UseState({ name }) {
             <input
                 placeholder="security code"
                 value={value}
-                onChange={({ target }) => setValue(target.value)}
+                onChange={({ target }) =>
+                    setState({ ...state, value: target.value })
+                }
             />
-            <button onClick={() => setLoading(!loading)}>Check it</button>
+            <button onClick={() => setState({ ...state, loading: !loading })}>
+                Check it
+            </button>
         </div>
     )
 }
