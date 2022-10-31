@@ -14,7 +14,7 @@ function UseReducer({ name }) {
 
     const onError = () => dispatch({ type: actionTypes.ERROR })
     const onConfirm = () => dispatch({ type: actionTypes.CONFIRM })
-    const onWrite = value =>
+    const onWrite = ({ target: { value } }) =>
         dispatch({
             type: actionTypes.WRITE,
             payload: value,
@@ -51,9 +51,9 @@ function UseReducer({ name }) {
                 <input
                     placeholder="security code"
                     value={value}
-                    onChange={({ target: { value } }) => onWrite(value)}
+                    onChange={onWrite}
                 />
-                <button onClick={() => onCheck()}>Check it</button>
+                <button onClick={onCheck}>Check it</button>
             </div>
         )
     } else if (confirmed) {
@@ -62,8 +62,8 @@ function UseReducer({ name }) {
                 <h2>Delete {name}</h2>
                 <p>Are you sure you want to delete UseState?</p>
 
-                <button onClick={() => onDeleted()}>Yes, delete.</button>
-                <button onClick={() => onRecover()}>No, go back.</button>
+                <button onClick={onDeleted}>Yes, delete.</button>
+                <button onClick={onRecover}>No, go back.</button>
             </div>
         )
     } else if (deleted) {
